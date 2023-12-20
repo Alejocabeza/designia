@@ -1,21 +1,16 @@
-import { Input, Label, View } from '@renderer/components'
+import { Button, Input, Label, Main } from '@renderer/components'
 
-export default function Home() {
+export const Home = (): JSX.Element => {
   return (
-    <View>
-      <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            className="mx-auto h-10 w-auto"
-            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=600"
-            alt="Your Company"
-          />
+    <Main className="h-screen flex flex-col w-screen justify-center items-center">
+      <div className="flex justify-center items-center gap-4 flex-col h-[70%] w-[45%] bg-[#cccccc60] rounded-xl shadow-md px-4">
+        <div className="h-auto flex flex-col justify-center items-center">
+          <img src="/logo.png" alt="logo" />
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Iniciar Sesion
           </h2>
         </div>
-
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="w-[90%] h-auto">
           <form className="space-y-6" action="#" method="POST">
             <div>
               <Label htmlFor="email">Correo Electronico</Label>
@@ -23,18 +18,9 @@ export default function Home() {
                 <Input id="email" name="email" type="email" autoComplete="email" required />
               </div>
             </div>
-
             <div>
               <div className="flex items-center justify-between">
                 <Label htmlFor="password">Contraseña</Label>
-                <div className="text-sm">
-                  <a
-                    href="/forgot_password"
-                    className="font-semibold text-indigo-600 hover:text-indigo-500"
-                  >
-                    Olvidaste tu Contraseña?
-                  </a>
-                </div>
               </div>
               <div className="mt-2">
                 <Input
@@ -46,18 +32,12 @@ export default function Home() {
                 />
               </div>
             </div>
-
             <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Iniciar
-              </button>
+              <Button type="submit">Iniciar Sesion</Button>
             </div>
           </form>
         </div>
       </div>
-    </View>
+    </Main>
   )
 }

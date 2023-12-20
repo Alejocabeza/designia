@@ -1,3 +1,3 @@
-export { Input } from './Input'
-export { View } from './View'
-export { Label } from './Label'
+export * from './Input'
+export * from './Label'
+export * from './Button'
