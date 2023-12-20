@@ -23,14 +23,14 @@ export class AuthService {
     try {
       const { password, confirmPassword, ...data } = signUpUserDto;
 
+      if (password !== confirmPassword)
+        throw new HttpException('Password not match', 404);
+
       const user = this.userRepository.create({
         ...data,
         password: hashSync(password, 10),
         confirmPassword: hashSync(confirmPassword, 10),
       });
-
-      if (password !== confirmPassword)
-        throw new HttpException('Password not match', 404);
 
       await this.userRepository.save(user);
 
@@ -96,6 +96,7 @@ export class AuthService {
 
   private handleDBExceptions(error: any) {
     if (error.code === '23505') throw new BadRequestException(error.detail);
+    throw new HttpException(error.message, error.status);
   }
 
   private getJwtToken(payload: JwtPayload) {
