@@ -1,7 +1,11 @@
+import { MailerModule } from '@nestjs-modules/mailer';
+import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
+import { AddressModule } from './address/address.module';
 
 @Module({
   imports: [
@@ -16,7 +20,31 @@ import { AuthModule } from './auth/auth.module';
       autoLoadEntities: true,
       synchronize: true,
     }),
+    MailerModule.forRootAsync({
+      useFactory: () => ({
+        transport: {
+          host: process.env.MAILTRAP_HOST,
+          port: parseInt(process.env.MAILTRAP_PORT),
+          secure: false,
+          auth: {
+            user: process.env.MAILTRAP_USER,
+            pass: process.env.MAILTRAP_PASSWORD,
+          },
+        },
+        defaults: {
+          from: '"No Reply" <no-reply@example.com>',
+        },
+        template: {
+          dir: join(__dirname, '..', 'templates'),
+          adapter: new HandlebarsAdapter(),
+          options: {
+            strict: true,
+          },
+        },
+      }),
+    }),
     AuthModule,
+    AddressModule,
   ],
   controllers: [],
   providers: [],

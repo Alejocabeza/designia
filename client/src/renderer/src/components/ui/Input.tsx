@@ -1,5 +1,4 @@
-import { EyeClose } from '@renderer/icons/EyeClose'
-import { EyeOpen } from '@renderer/icons/EyeOpen'
+import { EyeIcon, EyeSlashIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {}
@@ -28,7 +27,7 @@ export const Input = (props: Props): JSX.Element => {
           onClick={() => handleShowPassword()}
           className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
         >
-          <EyeOpen />
+          <EyeIcon className="text-black w-5 h-5" />
         </button>
       )}
       {props.type === 'password' && eyeOpen === true && (
@@ -36,7 +35,7 @@ export const Input = (props: Props): JSX.Element => {
           onClick={() => handleShowPassword()}
           className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
         >
-          <EyeClose />
+          <EyeSlashIcon className="text-black w-5 h-5" />
         </button>
       )}
     </div>

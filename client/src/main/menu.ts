@@ -1,7 +1,7 @@
-import { Menu } from 'electron'
+import { BrowserWindow, Menu } from 'electron'
 
-export const setMainMenu = (mainWindow): void => {
-  const template = [
+export const setMainMenu = (mainWindow: BrowserWindow): void => {
+  const template: Electron.MenuItemConstructorOptions[] = [
     {
       label: 'Inicio',
       submenu: [{ role: 'about' }, { type: 'separator' }, { role: 'quit' }]
@@ -31,7 +31,7 @@ export const setMainMenu = (mainWindow): void => {
       submenu: [
         {
           label: 'Ir a la pagina de inicio',
-          click: () => mainWindow.webContents.send('navigate', '/')
+          click: () => mainWindow.loadURL('http://localhost:5173/dashbaoard')
         }
       ]
     }

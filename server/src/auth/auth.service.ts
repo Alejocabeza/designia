@@ -1,3 +1,4 @@
+import { MailerService } from '@nestjs-modules/mailer';
 import {
   BadRequestException,
   HttpException,
@@ -8,7 +9,12 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { compareSync, hashSync } from 'bcrypt';
 import { Repository } from 'typeorm';
-import { SignInUserDto, SignUpUserDto } from './dto';
+import {
+  SendEmailRestorePasswordUserDto,
+  SignInUserDto,
+  SignUpUserDto,
+} from './dto';
+import { SendEmailActiveAccountUserDto } from './dto/send-email-active-account-user.dto';
 import { User } from './entities/user.entity';
 import { JwtPayload } from './interfaces';
 
@@ -16,7 +22,8 @@ import { JwtPayload } from './interfaces';
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    private jwtService: JwtService,
+    private readonly jwtService: JwtService,
+    private readonly mailerService: MailerService,
   ) {}
 
   async signUp(signUpUserDto: SignUpUserDto) {
@@ -52,8 +59,13 @@ export class AuthService {
         where: { email },
         select: {
           email: true,
+          roles: true,
           password: true,
+          name: true,
           confirmPassword: true,
+          active: true,
+          DNI: true,
+          avatar: true,
           id: true,
         },
       });
@@ -70,7 +82,8 @@ export class AuthService {
 
       this.updateTokeUser(user.id, token);
 
-      delete user.id;
+      delete user.password;
+      delete user.confirmPassword;
 
       return {
         ...user,
@@ -80,6 +93,56 @@ export class AuthService {
       this.handleDBExceptions(error);
     }
   }
+
+  async sendEmailRestorePassword(
+    sendEmailRestorePasswordUserDto: SendEmailRestorePasswordUserDto,
+  ) {
+    try {
+      const { email } = sendEmailRestorePasswordUserDto;
+      const user = await this.userRepository.findOneBy({ email });
+      if (!user) throw new BadRequestException('User not found');
+      const to = email;
+      const subject = 'Restore Password';
+      await this.mailerService.sendMail({
+        to,
+        subject,
+        template: 'emails/restore-password',
+        context: { subject, user, url: 'http://localhost:5173' },
+      });
+      return {
+        message: 'Your email of restore password sent your email',
+        code: 200,
+      };
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
+
+  async sendEmailActiveAccount(
+    sendEmailActiveAccount: SendEmailActiveAccountUserDto,
+  ) {
+    try {
+      const { email } = sendEmailActiveAccount;
+      const user = await this.userRepository.findOneBy({ email });
+      if (!user) throw new BadRequestException('User not found');
+      const to = email;
+      const subject = 'Restore Password';
+      await this.mailerService.sendMail({
+        to,
+        subject,
+        template: 'emails/active-account',
+        context: { subject, user, url: 'http://localhost:5173' },
+      });
+      return {
+        message: 'Your email of active account sent your email',
+        code: 200,
+      };
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
+
+  // restorePassword(restorePasswordUserDto: RestorePasswordUserDto) {}
 
   private async updateTokeUser(id: string, token: string) {
     try {

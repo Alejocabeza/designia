@@ -1,11 +1,11 @@
-import { UseMutationResult } from '@tanstack/react-query'
 import { FormEvent } from 'react'
+import { HandleSubmit, MutationData } from './type'
 
-export const Handles = (query: UseMutationResult<void, Error, object, unknown>): any => {
+export const Handles = (query): { handleSubmit: HandleSubmit } => {
   const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
-    const data = Object.fromEntries(formData)
+    const data: MutationData = Object.fromEntries(formData)
     query.mutate(data)
   }
 

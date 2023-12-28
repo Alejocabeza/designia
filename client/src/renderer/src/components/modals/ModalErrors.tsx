@@ -1,9 +1,9 @@
-import { Fragment, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
-import { ErrorPorps } from '@renderer/interface'
+import { Fragment, useRef, useState } from 'react'
+import { ModalProps } from './type'
 
-export const ModalErrors = ({ title, message }: ErrorPorps): JSX.Element => {
+export const ModalErrors = ({ title, message }: ModalProps): JSX.Element => {
   const [open, setOpen] = useState(true)
 
   const cancelButtonRef = useRef(null)
@@ -51,7 +51,18 @@ export const ModalErrors = ({ title, message }: ErrorPorps): JSX.Element => {
                         {title}
                       </Dialog.Title>
                       <div className="mt-2">
-                        <p className="text-sm text-gray-500">{message}</p>
+                        {Array.isArray(message) ? (
+                          message.map((item, index) => (
+                            <li
+                              key={index}
+                              className="flex justify-center flex-col items-center gap-[2rem]"
+                            >
+                              <p className="text-sm text-gray-500 mt-[.5rem]">{item}</p>
+                            </li>
+                          ))
+                        ) : (
+                          <p className="text-sm text-gray-500">{message}</p>
+                        )}
                       </div>
                     </div>
                   </div>
