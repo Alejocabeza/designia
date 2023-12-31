@@ -8,13 +8,9 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { compareSync, hashSync } from 'bcrypt';
+import { PinService } from 'src/pin/pin.service';
 import { Repository } from 'typeorm';
-import {
-  SendEmailRestorePasswordUserDto,
-  SignInUserDto,
-  SignUpUserDto,
-} from './dto';
-import { SendEmailActiveAccountUserDto } from './dto/send-email-active-account-user.dto';
+import { LoginUserDto, RegisterUserDto, SendEmailUserDto } from './dto';
 import { User } from './entities/user.entity';
 import { JwtPayload } from './interfaces';
 
@@ -22,13 +18,14 @@ import { JwtPayload } from './interfaces';
 export class AuthService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
+    private readonly pinService: PinService,
     private readonly jwtService: JwtService,
     private readonly mailerService: MailerService,
   ) {}
 
-  async signUp(signUpUserDto: SignUpUserDto) {
+  async signUp(registerUserDto: RegisterUserDto) {
     try {
-      const { password, confirmPassword, ...data } = signUpUserDto;
+      const { password, confirmPassword, ...data } = registerUserDto;
 
       if (password !== confirmPassword)
         throw new HttpException('Password not match', 404);
@@ -43,7 +40,6 @@ export class AuthService {
 
       delete user.password;
       delete user.confirmPassword;
-      delete user.tokenResetPassoword;
       delete user.token;
       return user;
     } catch (error) {
@@ -51,9 +47,9 @@ export class AuthService {
     }
   }
 
-  async signIn(signInUserDto: SignInUserDto) {
+  async signIn(loginUserDto: LoginUserDto) {
     try {
-      const { email, password, confirmPassword } = signInUserDto;
+      const { email, password, confirmPassword } = loginUserDto;
 
       const user = await this.userRepository.findOne({
         where: { email },
@@ -94,20 +90,27 @@ export class AuthService {
     }
   }
 
-  async sendEmailRestorePassword(
-    sendEmailRestorePasswordUserDto: SendEmailRestorePasswordUserDto,
-  ) {
+  async sendEmailRestorePassword(sendEmailUserDto: SendEmailUserDto) {
     try {
-      const { email } = sendEmailRestorePasswordUserDto;
+      const { email } = sendEmailUserDto;
       const user = await this.userRepository.findOneBy({ email });
       if (!user) throw new BadRequestException('User not found');
       const to = email;
       const subject = 'Restore Password';
+      const pin = this.pinService.generatePinRandom();
+      const expiryDate = new Date();
+      expiryDate.setMinutes(expiryDate.getMinutes() + 1);
+      const pinDto = {
+        user,
+        pin,
+        expireDate: expiryDate,
+      };
+      this.pinService.create(pinDto);
       await this.mailerService.sendMail({
         to,
         subject,
         template: 'emails/restore-password',
-        context: { subject, user, url: 'http://localhost:5173' },
+        context: { subject, user, pin },
       });
       return {
         message: 'Your email of restore password sent your email',
@@ -118,20 +121,19 @@ export class AuthService {
     }
   }
 
-  async sendEmailActiveAccount(
-    sendEmailActiveAccount: SendEmailActiveAccountUserDto,
-  ) {
+  async sendEmailActiveAccount(sendEmailUserDto: SendEmailUserDto) {
     try {
-      const { email } = sendEmailActiveAccount;
+      const { email } = sendEmailUserDto;
       const user = await this.userRepository.findOneBy({ email });
       if (!user) throw new BadRequestException('User not found');
       const to = email;
       const subject = 'Restore Password';
+      const pin = this.pinService.generatePinRandom();
       await this.mailerService.sendMail({
         to,
         subject,
         template: 'emails/active-account',
-        context: { subject, user, url: 'http://localhost:5173' },
+        context: { subject, user, pin },
       });
       return {
         message: 'Your email of active account sent your email',
@@ -141,8 +143,6 @@ export class AuthService {
       this.handleDBExceptions(error);
     }
   }
-
-  // restorePassword(restorePasswordUserDto: RestorePasswordUserDto) {}
 
   private async updateTokeUser(id: string, token: string) {
     try {

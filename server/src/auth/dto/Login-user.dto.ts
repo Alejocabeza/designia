@@ -1,15 +1,16 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsString,
-  MinLength,
-  MaxLength,
   Matches,
-  IsNotEmpty,
+  MaxLength,
+  MinLength,
 } from 'class-validator';
 
-export class SignUpUserDto {
+export class LoginUserDto {
   @IsString()
   @IsEmail()
+  @ApiProperty({ example: '2Tq9J@example.com' })
   email: string;
 
   @IsString()
@@ -19,14 +20,8 @@ export class SignUpUserDto {
     message:
       'The password must have a Uppercase, lowercase letter and a number',
   })
+  @ApiProperty({ example: '123456' })
   password: string;
-
-  @IsNotEmpty()
-  @IsString()
-  @MinLength(6)
-  @MaxLength(8)
-  @Matches(/^\d{6,8}$/, { message: 'Invalid DNI' })
-  DNI: string;
 
   @IsString()
   @MinLength(6)
@@ -35,9 +30,6 @@ export class SignUpUserDto {
     message:
       'The password must have a Uppercase, lowercase letter and a number',
   })
+  @ApiProperty({ example: '123456' })
   confirmPassword: string;
-
-  @IsString()
-  @MinLength(1)
-  name: string;
 }

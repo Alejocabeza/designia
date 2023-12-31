@@ -4,8 +4,9 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
-import { AuthModule } from './auth/auth.module';
 import { AddressModule } from './address/address.module';
+import { AuthModule } from './auth/auth.module';
+import { PinModule } from './pin/pin.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { AddressModule } from './address/address.module';
     }),
     AuthModule,
     AddressModule,
+    PinModule,
   ],
   controllers: [],
   providers: [],

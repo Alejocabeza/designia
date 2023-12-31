@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { User } from 'src/auth/entities/user.entity';
 import { CreateAddressDto } from './dto/create-address.dto';
 import { UpdateAddressDto } from './dto/update-address.dto';
-import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class AddressService {
