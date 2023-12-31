@@ -1,6 +1,0 @@
-export * from './Button'
-export * from './IconBox'
-export * from './Input'
-export * from './Label'
-export * from './SelectLoader'
-export * from './TextArea'

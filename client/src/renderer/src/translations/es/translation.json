@@ -1,0 +1,18 @@
+{
+    "general": {
+        "change_lang": "Cambiar el Idioma",
+        "change_theme": "Cambiar el Esquema de Colores",
+        "reset_password": "Cambia Tu Contraseña"
+    },
+    "sign_in": {
+        "title": "Iniciar Sesion",
+        "email": "Correo Electronico",
+        "password": "Contraseña",
+        "confirm_password": "Confirma tu Contraseña"
+    },
+    "restore_password": {
+        "send_email_title": "Confirma Tu Correo Electrinico",
+        "send_email_text": "Te enviaremos un correo electronico con un ping que tendras que proporcionarnos para confirmar tu Correo",
+        "send_code": "Enviar Codigo"
+    }
+}
