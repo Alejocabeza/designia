@@ -2,7 +2,8 @@
   "general": {
     "change_lang": "Cambiar el Idioma",
     "change_theme": "Cambiar el Esquema de Colores",
-    "reset_password": "Cambia Tu Contraseña"
+    "reset_password": "Cambia Tu Contraseña",
+    "previous_step": "Paso Anterior"
   },
   "sign_in": {
     "title": "Iniciar Sesion",
@@ -11,8 +12,11 @@
     "confirm_password": "Confirma tu Contraseña"
   },
   "restore_password": {
+    "validate_pin_title": "Valida tu PIN",
     "send_email": "Enviar Correo Electronico",
+    "validate_pin_text": "Por Favor, introduce el PIN enviado a tu correo electronico",
     "validated_email": "Validar el Correo Electronico",
+    "validate_pin": "Validar PIN",
     "change_password": "Cambia Tu Contraseña",
     "send_email_title": "Confirma Tu Correo Electrinico",
     "send_email_text": "Te enviaremos un correo electronico con un ping que tendras que proporcionarnos para confirmar tu Correo",

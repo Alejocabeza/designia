@@ -1,18 +1,25 @@
 {
-    "general": {
-        "change_lang": "Change Language",
-        "change_theme": "Change Theme",
-        "reset_password": "Restore Your Password"
-    },
-    "sign_in": {
-        "title": "Login",
-        "email": "Email",
-        "password": "Password",
-        "confirm_password": "Confirm Password"
-    },
-    "restore_password": {
-        "send_email_title": "Confirm Your Email",
-        "send_email_text": "We will send you an email with a ping that you will have to provide us to confirm your Email",
-        "send_code": "Send Code"
-    }
+  "general": {
+    "change_lang": "Change Language",
+    "change_theme": "Change Theme",
+    "reset_password": "Restore Your Password",
+    "previous_step": "Previous Step"
+  },
+  "sign_in": {
+    "title": "Login",
+    "email": "Email",
+    "password": "Password",
+    "confirm_password": "Confirm Password"
+  },
+  "restore_password": {
+    "validate_pin_title": "Validate your pin",
+    "validate_pin_text": "Please enter your pin to continue",
+    "validate_pin": "Validate Pin",
+    "send_email": "Send Email",
+    "validated_email": "Validated Email",
+    "change_password": "Change Password",
+    "send_email_title": "Confirm Your Email",
+    "send_email_text": "We will send you an email with a ping that you will have to provide us to confirm your Email",
+    "send_code": "Send Code"
+  }
 }

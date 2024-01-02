@@ -103,7 +103,7 @@ export function SignIn(): JSX.Element {
                       {t('sign_in.password')}
                     </Label>
                     <Tooltip label={t('general.reset_password')} placement="right">
-                      <Link href="/send_email_restore_password">
+                      <Link href="/restore_password">
                         <IconButton
                           aria-label="reset password"
                           colorScheme={useColorModeValue('purple', 'orange')}
