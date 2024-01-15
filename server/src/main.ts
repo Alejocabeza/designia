@@ -4,9 +4,9 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { cors: true });
 
-  app.enableCors({ origin: ['http://localhost:5173'], methods: '*' });
+  app.enableCors();
 
   app.setGlobalPrefix('api');
 
@@ -21,7 +21,6 @@ async function bootstrap() {
     .setTitle('Project University')
     .setDescription('This API is a complement of project university')
     .setVersion('0.0.1')
-    .addTag('University')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

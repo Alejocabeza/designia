@@ -9,12 +9,6 @@ export class LoginResponse {
 
   @ApiProperty({
     type: String,
-    example: 'Jhon',
-  })
-  name: string;
-
-  @ApiProperty({
-    type: String,
     example: '123456789',
   })
   DNI: string;
