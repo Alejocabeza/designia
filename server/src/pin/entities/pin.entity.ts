@@ -13,7 +13,10 @@ import {
 export class Pin {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-  @ManyToOne(() => User, (user) => user.id, { eager: true })
+  @ManyToOne(() => User, (user) => user.id, {
+    eager: true,
+    nullable: true,
+  })
   user: User;
   @Column('int')
   pin: number;

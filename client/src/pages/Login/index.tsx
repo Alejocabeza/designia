@@ -198,7 +198,7 @@ export function SignIn(): JSX.Element {
                       size="1.5rem"
                     />
                   ) : (
-                    t('sign_in.send')
+                    t('sign_in.title')
                   )}
                 </Button>
               </Box>

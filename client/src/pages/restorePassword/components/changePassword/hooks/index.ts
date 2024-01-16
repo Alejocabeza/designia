@@ -1,1 +1,1 @@
-export * from './useSendEmailPasswordRestore'
+export * from './useChangePassword'

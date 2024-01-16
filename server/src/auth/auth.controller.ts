@@ -1,6 +1,12 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { ApiBody, ApiCreatedResponse, ApiOperation } from '@nestjs/swagger';
-import { LoginResponse, SendEmailResponse } from 'src/auth/clases';
+import {
+  LoginResponse,
+  SendEmailResponse,
+  ValidatePinResponse,
+} from 'src/auth/clases';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { ValidatePinUserDto } from 'src/auth/dto/validatePin-user.dto';
 import { User } from 'src/auth/entities/user.entity';
 import { AuthService } from './auth.service';
 import { LoginUserDto, RegisterUserDto, SendEmailUserDto } from './dto';
@@ -47,6 +53,22 @@ export class AuthController {
   })
   sendEmailRestorePassword(@Body() sendEmailUserDto: SendEmailUserDto) {
     return this.authService.sendEmailRestorePassword(sendEmailUserDto);
+  }
+
+  @Post('validate_pin')
+  @ApiOperation({
+    summary: 'Validate pin',
+  })
+  @ApiBody({ type: ValidatePinUserDto })
+  @ApiCreatedResponse({
+    description: 'The Pin has been successfully created.',
+    type: ValidatePinResponse,
+  })
+  validatePin(
+    @Body() validatePinUserDto: ValidatePinUserDto,
+    @GetUser() user: User,
+  ) {
+    return this.authService.validatePin(validatePinUserDto, user);
   }
 
   @Post('send_email_active_account')

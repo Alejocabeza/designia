@@ -8,6 +8,7 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { compareSync, hashSync } from 'bcrypt';
+import { ValidatePinUserDto } from 'src/auth/dto/validatePin-user.dto';
 import { PinService } from 'src/pin/pin.service';
 import { Repository } from 'typeorm';
 import { LoginUserDto, RegisterUserDto, SendEmailUserDto } from './dto';
@@ -137,6 +138,20 @@ export class AuthService {
       });
       return {
         message: 'Your email of active account sent your email',
+        code: 200,
+      };
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
+
+  async validatePin(validatePinUserDto: ValidatePinUserDto, user: User) {
+    try {
+      const { pin } = validatePinUserDto;
+      const pinDb = await this.pinService.validatePin(pin, user);
+      if (!pinDb) throw new BadRequestException('Pin not valid');
+      return {
+        message: 'Pin valid',
         code: 200,
       };
     } catch (error) {

@@ -11,10 +11,14 @@ import {
   Tooltip,
   useColorModeValue
 } from '@chakra-ui/react'
-// import { useState } from 'react'
+import { UseMutationResult } from '@tanstack/react-query'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { FaArrowLeftLong } from 'react-icons/fa6'
-// import { initialStatePin } from './states'
+import { useValidatePin } from './hooks'
+import { validatePinInterface } from './interface'
+import { initialState } from './lib'
+import { specificHandles } from './utils/specificHandles'
 
 interface Props {
   active: number
@@ -22,7 +26,13 @@ interface Props {
 }
 
 export const ValidatePin = (props: Props): JSX.Element => {
-  // const [formValues, setFormValues] = useState(initialStatePin)
+  const validatePin = useValidatePin()
+  const [formValues, setFormValues] = useState<validatePinInterface>(initialState)
+  const { handleSubmit, handleChangePin } = specificHandles(
+    formValues,
+    setFormValues,
+    validatePin as UseMutationResult
+  )
   const { t } = useTranslation()
   return (
     <Stack w="100%" h="100%" display="flex" justifyContent="center" alignItems="center">
@@ -88,10 +98,19 @@ export const ValidatePin = (props: Props): JSX.Element => {
             </Heading>
             <Text>{t('restore_password.validate_pin_text')}</Text>
           </Box>
-          <form className="w-full flex flex-col justify-center items-center gap-8">
+          <form
+            className="w-full flex flex-col justify-center items-center gap-8"
+            onSubmit={handleSubmit}
+          >
             <Box w="full">
               <HStack>
-                <PinInput otp size="lg" defaultValue={formValues.pin.value} manageFocus={true}>
+                <PinInput
+                  otp
+                  size="lg"
+                  defaultValue={formValues.pin.value}
+                  manageFocus={true}
+                  onChange={handleChangePin}
+                >
                   <PinInputField />
                   <PinInputField />
                   <PinInputField />

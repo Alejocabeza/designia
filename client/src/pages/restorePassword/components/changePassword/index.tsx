@@ -10,7 +10,6 @@ import {
   Tooltip,
   useColorModeValue
 } from '@chakra-ui/react'
-// import { useState } from 'react'
 import { UseMutationResult } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'

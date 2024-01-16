@@ -1,5 +1,6 @@
 import { BadRequestException, HttpException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/auth/entities/user.entity';
 import { Pin } from 'src/pin/entities/pin.entity';
 import { Repository } from 'typeorm';
 import { CreatePinDto } from './dto/create-pin.dto';
@@ -10,6 +11,15 @@ export class PinService {
   constructor(
     @InjectRepository(Pin) private readonly pinRepository: Repository<Pin>,
   ) {}
+
+  async findOne(user: User) {
+    try {
+      const pin = await this.pinRepository.findOneBy({ where: { user } });
+      return pin;
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
 
   async create(createPinDto: CreatePinDto) {
     try {
