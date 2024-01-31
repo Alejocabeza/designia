@@ -20,8 +20,6 @@ export class Pin {
   user: User;
   @Column('int')
   pin: number;
-  @Column('text')
-  expireDate: Date;
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
   @UpdateDateColumn({ name: 'updated_at' })

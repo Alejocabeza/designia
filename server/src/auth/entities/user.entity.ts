@@ -37,11 +37,13 @@ export class User {
   @Column('bool', { default: false })
   @ApiProperty({ example: true })
   active: boolean;
-  @Column('text', { array: true, default: ['user', 'free'] })
+  @Column('text', { array: true, default: ['user', 'free'], select: false })
   @ApiProperty({ example: ['user', 'free'] })
   roles: string[];
   @Column('text', { nullable: true, select: false })
   token: string;
+  @Column('text', { nullable: true, select: false })
+  tokenResetPassword: string;
   @CreateDateColumn({ name: 'created_at' })
   @ApiProperty({ example: '2020-01-01T00:00:00.000Z' })
   createdAt: Date;
