@@ -1,14 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class ValidatePinResponse {
+export class ResponseDefault {
   @ApiProperty({
     type: Number,
     example: 200,
   })
   code: number;
+
   @ApiProperty({
     type: String,
-    example: 'Pin Validated',
+    example: 'Success',
   })
   message: string;
 }

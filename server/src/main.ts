@@ -18,12 +18,15 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Project University')
-    .setDescription('This API is a complement of project university')
+    .setTitle('Designia')
+    .setDescription(
+      'Designia es una aplicación web que ofrece una solución integral para la gestión de proyectos arquitectónicos, desde la concepción hasta la entrega. Con Designia, los arquitectos pueden crear y compartir diseños, planificar y asignar tareas, comunicarse con los clientes y colaboradores, controlar el presupuesto y el cronograma, y supervisar el progreso y la calidad de los proyectos.',
+    )
     .setVersion('0.0.1')
+    .addTag('Auth')
     .build();
   const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  SwaggerModule.setup('api/docs', app, document);
 
   await app.listen(process.env.PORT || 8000);
 }

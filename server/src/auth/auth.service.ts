@@ -8,6 +8,8 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { compareSync, hashSync } from 'bcrypt';
+import { ActiveAccountUserDto } from 'src/auth/dto/active-account-user.dto';
+import { ChangePasswordUserDto } from 'src/auth/dto/change-password-user.dto';
 import { ValidatePinUserDto } from 'src/auth/dto/validatePin-user.dto';
 import { PinService } from 'src/pin/pin.service';
 import { Repository } from 'typeorm';
@@ -24,7 +26,7 @@ export class AuthService {
     private readonly mailerService: MailerService,
   ) {}
 
-  async signUp(registerUserDto: RegisterUserDto) {
+  async register(registerUserDto: RegisterUserDto) {
     try {
       const { password, confirmPassword, ...data } = registerUserDto;
 
@@ -48,7 +50,7 @@ export class AuthService {
     }
   }
 
-  async signIn(loginUserDto: LoginUserDto) {
+  async login(loginUserDto: LoginUserDto) {
     try {
       const { email, password, confirmPassword } = loginUserDto;
 
@@ -106,15 +108,23 @@ export class AuthService {
         pin,
         expireDate: expiryDate,
       };
-      this.pinService.create(pinDto);
+      this.pinService.create(pinDto, user);
       await this.mailerService.sendMail({
         to,
         subject,
         template: 'emails/restore-password',
         context: { subject, user, pin },
       });
+
+      const tokenResetPassword = this.getJwtToken({ id: user.id });
+
+      this.updateTokeUser(user.id, tokenResetPassword, 2);
+
       return {
-        message: 'Your email of restore password sent your email',
+        data: {
+          messages: 'Your email of restore password sent your email',
+          tokenResetPassword,
+        },
         code: 200,
       };
     } catch (error) {
@@ -128,7 +138,7 @@ export class AuthService {
       const user = await this.userRepository.findOneBy({ email });
       if (!user) throw new BadRequestException('User not found');
       const to = email;
-      const subject = 'Restore Password';
+      const subject = 'Active Account';
       const pin = this.pinService.generatePinRandom();
       await this.mailerService.sendMail({
         to,
@@ -145,10 +155,28 @@ export class AuthService {
     }
   }
 
-  async validatePin(validatePinUserDto: ValidatePinUserDto, user: User) {
+  async activeAccount(activeAccountUserDto: ActiveAccountUserDto, user: User) {
+    try {
+      const { id } = user;
+      user = await this.userRepository.preload({
+        id,
+        active: activeAccountUserDto.active,
+      });
+      if (!user) throw new BadRequestException('User not found');
+      await this.userRepository.save(user);
+      return {
+        message: 'Your Account Active',
+        code: 200,
+      };
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
+
+  async validatePin(validatePinUserDto: ValidatePinUserDto) {
     try {
       const { pin } = validatePinUserDto;
-      const pinDb = await this.pinService.validatePin(pin, user);
+      const pinDb = await this.pinService.findOne(pin);
       if (!pinDb) throw new BadRequestException('Pin not valid');
       return {
         message: 'Pin valid',
@@ -159,14 +187,56 @@ export class AuthService {
     }
   }
 
-  private async updateTokeUser(id: string, token: string) {
+  async changePassword(
+    changePasswordUserDto: ChangePasswordUserDto,
+    user: User,
+  ) {
     try {
-      const user = await this.userRepository.preload({
+      const { id } = user;
+      user = await this.userRepository.preload({
         id,
-        token,
+        password: hashSync(changePasswordUserDto.password, 10),
+        confirmPassword: hashSync(changePasswordUserDto.confirmPassword, 10),
       });
+      if (!user) throw new BadRequestException('User not found');
       await this.userRepository.save(user);
-      return true;
+      return {
+        message: 'Change password success',
+        code: 200,
+      };
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
+
+  async findOne(id: string) {
+    try {
+      const user = await this.userRepository.findOneBy({ id });
+      if (!user) throw new BadRequestException('User not found');
+      return user;
+    } catch (error) {
+      this.handleDBExceptions(error);
+    }
+  }
+
+  private async updateTokeUser(id: string, token: string, type: number = 1) {
+    try {
+      if (type === 1) {
+        const user = await this.userRepository.preload({
+          id,
+          token,
+        });
+        await this.userRepository.save(user);
+        return true;
+      }
+      if (type === 2) {
+        const user = await this.userRepository.preload({
+          id,
+          tokenResetPassword: token,
+        });
+        await this.userRepository.save(user);
+        return true;
+      }
     } catch (error) {
       this.handleDBExceptions(error);
     }
