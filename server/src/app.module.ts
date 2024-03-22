@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { PinModule } from './pin/pin.module';
+import { ProjectModule } from './project/project.module';
+import { ClientModule } from './client/client.module';
 
 @Module({
   imports: [
@@ -45,6 +47,8 @@ import { PinModule } from './pin/pin.module';
     }),
     AuthModule,
     PinModule,
+    ProjectModule,
+    ClientModule,
   ],
   controllers: [],
   providers: [],
