@@ -1,5 +1,0 @@
-export * from './Input'
-export * from './Label'
-export * from './Layout'
-export * from './ToggleChangeLang'
-export * from './ToggleChangeTheme'
